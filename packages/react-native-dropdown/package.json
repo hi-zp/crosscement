@@ -53,6 +53,9 @@
     "react": "*",
     "react-native": "*"
   },
+  "dependencies": {
+    "@crosscement/react-native-backdrop": "^1.0.0-alpha.0"
+  },
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [

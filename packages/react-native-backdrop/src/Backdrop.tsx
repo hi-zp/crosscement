@@ -1,5 +1,10 @@
 import React from 'react';
-import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Animated,
+  StyleSheet,
+  TouchableOpacity,
+  ViewProps,
+} from 'react-native';
 
 export interface BackdropProps {
   visible: boolean;
@@ -7,7 +12,7 @@ export interface BackdropProps {
   onPress?: () => void;
   backgroundColor?: string;
   animationDuration?: number;
-  pointerEvents?: string;
+  pointerEvents?: ViewProps['pointerEvents'];
   useNativeDriver?: boolean;
 }
 

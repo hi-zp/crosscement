@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Backdrop } from './backdrop';
+import { Backdrop } from '@crosscement/react-native-backdrop';
 import { DropdownContext } from './context';
 import { Portal } from './portal';
 import type { IBoundary, IDropdownProps } from './types';

@@ -1,5 +1,5 @@
 {
-  "name": "@crosscement/react-native-tooltip",
+  "name": "@crosscement/react-native-backdrop",
   "version": "1.0.0-alpha.0",
   "description": "smart tooltip",
   "main": "lib/commonjs/index",
@@ -26,32 +26,26 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it",
-    "example": "yarn --cwd example",
-    "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "release": "release-it"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": "https://github.com/hi-zp/react-native-tooltip",
+  "repository": "https://github.com/hi-zp/crosscement",
   "author": "hi-zp <987107833@qq.com> (https://github.com/hi-zp)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hi-zp/react-native-tooltip/issues"
+    "url": "https://github.com/hi-zp/crosscement/issues"
   },
-  "homepage": "https://github.com/hi-zp/react-native-tooltip#readme",
+  "homepage": "https://github.com/hi-zp/crosscement#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  },
-  "dependencies": {
-    "@crosscement/react-native-backdrop": "^1.0.0-alpha.0"
   },
   "jest": {
     "preset": "react-native",

@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import { Animated, View } from 'react-native';
-import { Backdrop } from './backdrop';
+import { Backdrop } from '@crosscement/react-native-backdrop';
 import { TooltipContext } from './TooltipProdiver';
 import { Portal } from './portal';
 import type { IBoundary, ITooltipProps } from './types';
