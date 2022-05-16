@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
 import { DropdownContext } from './context';
-import { Portal } from './portal';
+import { Portal } from '@crosscement/react-native-portal';
 import type { IBoundary, IDropdownProps } from './types';
 import { createScrollViewHook, handleRetry } from './utils';
 

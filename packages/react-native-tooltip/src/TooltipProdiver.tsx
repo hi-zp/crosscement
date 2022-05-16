@@ -1,5 +1,5 @@
 import React, { createContext, isValidElement } from 'react';
-import { Portal } from './portal';
+import { Portal } from '@crosscement/react-native-portal';
 
 export type IContext = {
   scroll?: React.RefObject<any>;

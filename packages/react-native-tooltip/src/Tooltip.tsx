@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import { Animated, View } from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
 import { TooltipContext } from './TooltipProdiver';
-import { Portal } from './portal';
+import { Portal } from '@crosscement/react-native-portal';
 import type { IBoundary, ITooltipProps } from './types';
 import { calculate, createScrollViewHook, handleRetry } from './utils';
 import { Polygon } from './Polygon';

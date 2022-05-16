@@ -1,7 +1,7 @@
 import React, { ComponentClass, useRef } from 'react';
 import type { ScrollViewProps } from 'react-native';
 import { TooltipProdiver } from './TooltipProdiver';
-import { Portal } from './portal';
+import { Portal } from '@crosscement/react-native-portal';
 import type {
   IBoundary,
   IPlacement,

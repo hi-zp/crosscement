@@ -1,7 +1,7 @@
 import React, { ComponentClass, useRef } from 'react';
 import type { ScrollViewProps } from 'react-native';
 import { DropdownProdiver } from './context';
-import { Portal } from './portal';
+import { Portal } from '@crosscement/react-native-portal';
 import type { IRootElementType, IScrollableView } from './types';
 
 // export function useEffectState<S, F = () => void>(
