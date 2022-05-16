@@ -8,8 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
-    "postinstall": "rm -rf ./node_modules/@types/react-native/node_modules/"
+    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix"
   },
   "author": "hi-zp",
   "license": "ISC",
@@ -17,12 +16,15 @@
     "react": "*",
     "react-native": "*"
   },
+  "resolutions": {
+    "@types/react": "17.0.43"
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^2.0.0",
     "@types/jest": "^26.0.0",
-    "@types/react": "17.0.21",
+    "@types/react": "17.0.43",
     "@types/react-native": "0.66.13",
     "commitlint": "^11.0.0",
     "eslint": "^7.2.0",
@@ -34,7 +36,7 @@
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "17.0.2",
-    "react-native": "0.68.2",
+    "react-native": "0.66.0",
     "react-native-builder-bob": "^0.18.0",
     "release-it": "^14.2.2",
     "typescript": "^4.1.3"
@@ -42,7 +44,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn typescript"
+      "pre-commit": "yarn lint"
     }
   },
   "commitlint": {
