@@ -1,7 +1,7 @@
 {
   "name": "@crosscement/react-native-portal",
   "version": "1.0.0-alpha.0",
-  "description": "smart tooltip",
+  "description": "smart protal",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",

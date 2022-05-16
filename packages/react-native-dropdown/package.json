@@ -10,10 +10,6 @@
   "files": [
     "src",
     "lib",
-    "android",
-    "ios",
-    "cpp",
-    "react-native-dropdown.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -38,14 +34,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hi-zp/react-native-dropdown.git"
+    "url": "git+https://github.com/hi-zp/crosscement.git"
   },
   "author": "hi-zp <987107833@qq.com> (https://github.com/hi-zp)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hi-zp/react-native-dropdown/issues"
+    "url": "https://github.com/hi-zp/crosscement/issues"
   },
-  "homepage": "https://github.com/hi-zp/react-native-dropdown#readme",
+  "homepage": "https://github.com/hi-zp/crosscement#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
