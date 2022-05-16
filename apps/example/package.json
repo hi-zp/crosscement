@@ -7,9 +7,15 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "update-stories": "sb-rn-get-stories --config-path .ondevice",
+    "prestart": "yarn update-stories",
+    "storybook-watcher": "sb-rn-watcher --config-path .ondevice",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
     "@crosscement/react-native-dropdown": "1.0.0-alpha.1",
     "@crosscement/react-native-tooltip": "1.0.0-alpha.0",
     "@react-native-async-storage/async-storage": "1.15.0",
@@ -24,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.9.6",
     "@storybook/addon-actions": "~6.3.0",
     "@storybook/addon-controls": "~6.3.0",
     "@storybook/addon-essentials": "~6.3.0",
