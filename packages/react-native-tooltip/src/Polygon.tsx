@@ -1,26 +1,26 @@
 import React, { forwardRef } from 'react';
 import { StyleSheet, View, ViewProps, ViewStyle } from 'react-native';
-import type { IPlacement, ITooltipProps } from './types';
+import type { ITooltipProps } from './types';
 
 interface PolygonProps extends ViewProps {
-  size?: ITooltipProps['polygonSize'];
-  color?: ITooltipProps['polygonColor'];
+  size?: ITooltipProps['arrowSize'];
+  color?: ITooltipProps['arrowColor'];
   placement?: ITooltipProps['placement'];
 }
 
-const VARIATIONS: { [key in IPlacement]: string } = {
-  top: 'borderTopColor',
-  topLeft: 'borderTopColor',
-  topRight: 'borderTopColor',
-  bottom: 'borderBottomColor',
-  bottomLeft: 'borderBottomColor',
-  bottomRight: 'borderBottomColor',
-  left: 'borderLeftColor',
-  leftTop: 'borderLeftColor',
-  leftBottom: 'borderLeftColor',
-  right: 'borderRightColor',
-  rightTop: 'borderRightColor',
-  rightBottom: 'borderRightColor',
+const VARIATIONS: { [key in ITooltipProps['placement']]: string } = {
+  'top': 'borderTopColor',
+  'top-start': 'borderTopColor',
+  'top-end': 'borderTopColor',
+  'bottom': 'borderBottomColor',
+  'bottom-start': 'borderBottomColor',
+  'bottom-end': 'borderBottomColor',
+  'left': 'borderLeftColor',
+  'left-start': 'borderLeftColor',
+  'left-end': 'borderLeftColor',
+  'right': 'borderRightColor',
+  'right-start': 'borderRightColor',
+  'right-end': 'borderRightColor',
 };
 
 const styles = StyleSheet.create({

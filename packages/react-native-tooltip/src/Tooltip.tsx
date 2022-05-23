@@ -3,16 +3,16 @@ import { Animated, View } from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
 import { TooltipContext } from './TooltipProdiver';
 import { Portal } from '@crosscement/react-native-portal';
-import type { IBoundary, ITooltipProps } from './types';
-import { calculate, createScrollViewHook, handleRetry } from './utils';
+import type { ITooltipProps } from './types';
+import { createScrollViewHook } from './utils';
 import { Polygon } from './Polygon';
-import { placements } from './constants';
+import { calculatePosition, PLACEMENTS } from '@crosscement/react-native-utils';
 
 type IStatus = 'closed' | 'opening' | 'opened' | 'closing';
 type IState = { status: IStatus };
 
 export class Tooltip extends React.Component<ITooltipProps, IState> {
-  static placements = placements;
+  static placements = PLACEMENTS;
 
   static defaultProps: Partial<ITooltipProps> = {
     visible: false,
@@ -24,15 +24,15 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     crossOffset: 0,
     hasOverlay: true,
     hasPolygon: true,
-    polygonSize: 8,
-    polygonColor: 'red',
+    arrowSize: 8,
+    arrowColor: 'red',
     placement: 'bottom',
   };
 
   opacity = new Animated.Value(0);
-  target = createRef<View>();
-  content = createRef<View>();
-  polygonRef = createRef<View>();
+  targetRef = createRef<View>();
+  overlayRef = createRef<View>();
+  arrowRef = createRef<View>();
 
   constructor(props: ITooltipProps) {
     super(props);
@@ -76,21 +76,33 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     });
   };
 
+  private getScrollNode = () => {
+    if (this.context.scroll) {
+      return this.context.scroll.current.getScrollableNode
+        ? this.context.scroll.current.getScrollableNode()
+        : this.context.scroll.current;
+    } else {
+      return undefined;
+    }
+  };
+
   private _layout = async () => {
-    const [boundary, contentSize] = await Promise.all([
-      this._getBoundary(),
-      this._getContentSize(),
-    ]);
-    const { contentPosition, polygonPosition } = calculate(
-      boundary,
-      contentSize,
-      this.props.placement as any,
-      this.props.polygonSize as any,
-      this.props.mainOffset as any,
-      this.props.crossOffset as any
-    );
-    this.polygonRef.current?.setNativeProps(polygonPosition);
-    this.content.current?.setNativeProps(contentPosition);
+    if (!this.overlayRef.current || !this.targetRef.current) {
+      requestAnimationFrame(this._layout);
+      return;
+    }
+    const { floating, arrow } = await calculatePosition({
+      targetRef: this.targetRef,
+      overlayRef: this.overlayRef,
+      scrollNode: this.getScrollNode(),
+      placement: this.props.placement,
+      mainOffset: this.props.mainOffset,
+      crossOffset: this.props.crossOffset,
+      arrowSize: this.props.arrowSize,
+      arrowOffset: 0,
+    });
+    this.overlayRef.current?.setNativeProps(floating);
+    this.arrowRef.current?.setNativeProps(arrow);
   };
 
   dismiss = () => {
@@ -121,78 +133,6 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     }).start(onFinished);
   };
 
-  private _getBoundary = (): Promise<IBoundary> => {
-    return new Promise((resolve) => {
-      handleRetry(
-        (breakOff) => {
-          if (this.context.scroll) {
-            const scrollable = this.context.scroll.current.getScrollableNode
-              ? this.context.scroll.current.getScrollableNode()
-              : this.context.scroll.current;
-            this.target.current?.measureLayout(
-              scrollable,
-              (left, top, width, height) => {
-                if (!width && !height) {
-                  return;
-                }
-                breakOff();
-                resolve({
-                  top,
-                  left,
-                  right: left + width,
-                  bottom: top + height,
-                  width,
-                  height,
-                  coordinate: {
-                    x: left + width / 2,
-                    y: top + height / 2,
-                  },
-                });
-              },
-              () => null
-            );
-          } else {
-            this.target.current?.measureInWindow((x, y, width, height) => {
-              if (!width && !height) {
-                return;
-              }
-              breakOff();
-              resolve({
-                top: y,
-                left: x,
-                right: x + width,
-                bottom: y + height,
-                width,
-                height,
-                coordinate: {
-                  x: x + width / 2,
-                  y: y + height / 2,
-                },
-              });
-            });
-          }
-        },
-        { retryAttempts: 10, retryDelay: 10 }
-      );
-    });
-  };
-
-  private _getContentSize = (): Promise<{ width: number; height: number }> => {
-    return new Promise((resolve) => {
-      handleRetry(
-        (breakOff) => {
-          this.content.current?.measure((_x, _y, width, height) => {
-            if (height !== 0) {
-              breakOff();
-              resolve({ width, height });
-            }
-          });
-        },
-        { retryAttempts: 10 }
-      );
-    });
-  };
-
   private _renderOverlay() {
     const props = this.props;
     const overlayVisible = ['opening', 'opened'].includes(this.state.status);
@@ -212,10 +152,10 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     const props = this.props;
     return (
       <Polygon
-        ref={this.polygonRef}
-        size={props.polygonSize}
+        ref={this.arrowRef}
+        size={props.arrowSize}
         placement={props.placement}
-        color={props.polygonColor}
+        color={props.arrowColor}
         style={{ position: 'absolute' }}
       />
     );
@@ -227,7 +167,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
       <>
         {this._hasOverlay && this._renderOverlay()}
         <Animated.View
-          ref={this.content}
+          ref={this.overlayRef}
           style={[contentStyle, { opacity: this.opacity }]}
         >
           {hasPolygon && this._renderPolygon()}
@@ -241,7 +181,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     const { children, ...props } = this.props;
     return (
       <>
-        <View collapsable={false} ref={this.target} {...props}>
+        <View collapsable={false} ref={this.targetRef} {...props}>
           {children}
         </View>
         <Portal>

@@ -7,9 +7,7 @@ import type {
   ScrollViewProps,
   ViewProps,
 } from 'react-native';
-import type { placements } from './constants';
-
-export type IPlacement = typeof placements[number];
+import { IPlacement } from '@crosscement/react-native-utils';
 
 export type IRootElementType =
   | 'View'
@@ -35,20 +33,10 @@ export interface ITooltipProps extends ViewProps {
   overlayBackgroundColor?: string;
   overlayOpacity?: number;
   hasPolygon?: boolean;
-  polygonSize?: number;
-  polygonColor?: string;
+  arrowSize?: number;
+  arrowColor?: string;
 }
 
 export type IScrollableView<T> = ComponentClass<
   SectionListProps<T> | FlatListProps<T> | ScrollViewProps
 >;
-
-export type IBoundary = {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-  coordinate: { x: number; y: number };
-  width: number;
-  height: number;
-};

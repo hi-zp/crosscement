@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-tooltip",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "smart tooltip",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -48,7 +48,8 @@
   },
   "dependencies": {
     "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
-    "@crosscement/react-native-portal": "1.0.0-alpha.0"
+    "@crosscement/react-native-portal": "1.0.0-alpha.0",
+    "@crosscement/react-native-utils": "1.0.0-alpha.0"
   },
   "jest": {
     "preset": "react-native",

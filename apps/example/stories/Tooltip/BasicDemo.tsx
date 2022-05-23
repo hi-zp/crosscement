@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { Text, SafeAreaView, Button, View } from 'react-native';
-import { IPlacement, Tooltip } from '@crosscement/react-native-tooltip';
+import { Text, Button, View } from 'react-native';
+import { Tooltip } from '@crosscement/react-native-tooltip';
 
 export function BasicDemo() {
   const [visible, setVisible] = React.useState(false);
-  const [placement, setPlacement] = React.useState<IPlacement>('bottom');
+  const [placement, setPlacement] = React.useState<any>('bottom');
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <Text style={{ fontWeight: 'bold' }}>Placement</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {Tooltip.placements.map((i) => (
@@ -20,7 +20,7 @@ export function BasicDemo() {
           </Text>
         ))}
       </View>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ marginTop: 200 }}>
         <Tooltip
           visible={visible}
           content={<Text>tooltip</Text>}
@@ -28,18 +28,20 @@ export function BasicDemo() {
           placement={placement}
           contentStyle={{
             backgroundColor: 'red',
-            maxWidth: 100,
+            maxWidth: 90,
           }}
           style={{
             backgroundColor: 'yellow',
             marginTop: 20,
             justifyContent: 'center',
             alignItems: 'center',
+            width: 200,
+            left: 60,
           }}
         >
           <Button title="toggle" onPress={() => setVisible(!visible)} />
         </Tooltip>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
