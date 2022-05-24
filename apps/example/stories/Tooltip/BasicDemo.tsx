@@ -30,6 +30,8 @@ export function BasicDemo() {
             backgroundColor: 'red',
             maxWidth: 90,
           }}
+          crossOffset={5}
+          mainOffset={10}
           style={{
             backgroundColor: 'yellow',
             marginTop: 20,

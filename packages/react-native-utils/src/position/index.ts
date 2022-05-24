@@ -8,7 +8,6 @@ import {
   IRect,
   ISide,
 } from '../types';
-import { isRTL } from '../utils';
 
 interface IOptions {
   /**
@@ -48,125 +47,208 @@ interface IOptions {
   // shouldFlip?: boolean;
   /**
    * The arrow size, only supports a single size.
-   * @default 8
+   * @default 0
    */
   arrowSize?: number;
   /**
    * The arrow offset from main axis.
    * @default 0
    */
-  arrowOffset: number;
+  arrowOffset?: number;
+  /**
+   * Set layout to right-to-left.
+   * @default false
+   */
+  isRTL?: boolean;
 }
 
-export const calculatePosition = async (options: IOptions) => {
-  const {
-    placement = 'bottom',
-    mainOffset = 0,
-    crossOffset = 0,
-    arrowSize = 8,
-    arrowOffset = 0,
-  } = options;
-
-  const { targetBoundary, overlayRect } = await measure(options);
-
-  const floating: Partial<IPosition> = {};
-  const arrow: IPosition = {
-    left: 'auto',
-    right: 'auto',
-    bottom: 'auto',
-    top: 'auto',
-  };
-
-  const fullMainOffset = mainOffset + arrowSize;
-  const fullCrossOffset = crossOffset;
-
-  const [side, alignment] = placement.split('-') as [ISide, IAlignment];
-
-  const crossSide = CROSS_SIDE[side];
-  const crossSize = CROSS_SIZE[side];
-
-  const windows = Dimensions.get('window');
-  const rtl = isRTL();
-  const vertical = side === 'top' || side === 'bottom';
-
-  // handle axis
-  if (side === 'top') {
-    floating.top = targetBoundary.top - overlayRect.height - fullMainOffset;
-  } else if (side === 'bottom') {
-    floating.top = targetBoundary.bottom + fullMainOffset;
-  } else if (side === 'left') {
-    floating.left = rtl
-      ? windows.width -
-        targetBoundary.right -
-        overlayRect.width -
-        fullMainOffset
-      : targetBoundary.left - overlayRect.width - fullMainOffset;
-  } else {
-    floating.left = rtl
-      ? windows.width - targetBoundary.left + fullMainOffset
-      : targetBoundary.right + fullMainOffset;
-  }
-
-  // handle cross
-  if (alignment === 'start') {
-    floating[crossSide] =
-      vertical && rtl
-        ? windows.width -
-          targetBoundary[getFlipSide(crossSide)] +
-          fullCrossOffset
-        : targetBoundary[crossSide] + fullCrossOffset;
-  } else if (alignment === 'end') {
-    floating[crossSide] =
-      vertical && rtl
-        ? windows[crossSize] -
-          targetBoundary[crossSide] -
-          overlayRect[crossSize] -
-          fullCrossOffset
-        : targetBoundary[getFlipSide(crossSide)] -
-          overlayRect[crossSize] -
-          fullCrossOffset;
-  } else {
-    floating[crossSide] =
-      vertical && rtl
-        ? windows[crossSize] -
-          targetBoundary[getFlipSide(crossSide)] +
-          (targetBoundary[crossSize] - overlayRect[crossSize]) / 2
-        : targetBoundary[crossSide] +
-          targetBoundary[crossSize] / 2 -
-          overlayRect[crossSize] / 2;
-  }
-
-  // handle arrow
-  arrow[getFlipSide(side)] = -arrowSize;
-  if (alignment === 'start') {
-    arrow[crossSide] = Math.min(
-      arrowOffset,
-      overlayRect[crossSize] - arrowSize
-    );
-  } else if (alignment === 'end') {
-    arrow[getFlipSide(crossSide)] = Math.min(
-      arrowOffset,
-      overlayRect[crossSize] - arrowSize
-    );
-  } else {
-    arrow[crossSide] = (overlayRect[crossSize] - arrowSize) / 2;
-  }
-
-  return {
-    floating,
-    arrow,
-  };
+const defaultPosition: IPosition = {
+  left: 'auto',
+  right: 'auto',
+  bottom: 'auto',
+  top: 'auto',
 };
 
+export class Position {
+  public overlayPosition: Partial<IPosition> = defaultPosition;
+  public arrowPosition: IPosition = defaultPosition;
+
+  public side: ISide;
+  public alignment: IAlignment;
+  public rootWidth = Dimensions.get('window').width;
+
+  private mainOffset = 0; // aixs offset, if with arrow, need to add arrow size.
+  private crossOffset = 0; // cross offset
+  private arrowSize = 0;
+  private arrowOffset = 0;
+  private isRTL: boolean;
+
+  private targetRef: IOptions['targetRef'];
+  private overlayRef: IOptions['overlayRef'];
+  private scrollNode: IOptions['scrollNode'];
+
+  constructor(public readonly options: IOptions) {
+    // initial option values
+    this.targetRef = options.targetRef;
+    this.overlayRef = options.overlayRef;
+    this.scrollNode = options.scrollNode;
+    this.mainOffset = (options.mainOffset ?? 0) + (options.arrowSize ?? 0);
+    this.crossOffset = options.crossOffset ?? 0;
+    this.arrowSize = options.arrowSize ?? 0;
+    this.arrowOffset = options.arrowOffset ?? 0;
+    this.isRTL = options.isRTL ?? false;
+
+    // towards
+    const [side, alignment] = options.placement.split('-') as [
+      ISide,
+      IAlignment
+    ];
+    this.side = side;
+    this.alignment = alignment;
+  }
+
+  async calculate() {
+    const { targetBoundary, overlayRect } = await measure(
+      this.targetRef,
+      this.overlayRef,
+      this.scrollNode
+    );
+
+    const overlayPosition = {
+      ...this._calculateAxis(targetBoundary, overlayRect),
+      ...this._calculateCross(targetBoundary, overlayRect),
+    };
+
+    const arrowPosition = this._calculateArrow(overlayRect);
+
+    return {
+      overlayPosition,
+      arrowPosition,
+    };
+  }
+
+  /**
+   * Handle axis
+   * @param boundary reference boundary info
+   * @param rect floating size
+   * @returns position
+   */
+  private _calculateAxis(boundary: IBoundary, rect: IRect): Partial<IPosition> {
+    switch (this.side) {
+      case 'top':
+        return { top: boundary.top - rect.height - this.mainOffset };
+      case 'bottom':
+        return { top: boundary.bottom + this.mainOffset };
+      case 'left':
+        return {
+          left: this.isRTL
+            ? this.rootWidth - boundary.right - rect.width - this.mainOffset
+            : boundary.left - rect.width - this.mainOffset,
+        };
+      default:
+        return {
+          left: this.isRTL
+            ? this.rootWidth - boundary.left + this.mainOffset
+            : boundary.right + this.mainOffset,
+        };
+    }
+  }
+
+  /**
+   * Handle cross
+   * @param boundary reference boundary info
+   * @param rect floating size
+   * @returns position
+   */
+  private _calculateCross(
+    boundary: IBoundary,
+    rect: IRect
+  ): Partial<IPosition> {
+    const verticalRTL = this.isRTL && ['top', 'bottom'].includes(this.side);
+    const crossSide = CROSS_SIDE[this.side];
+    const crossSize = CROSS_SIZE[this.side];
+
+    let crossOffset = 0;
+
+    if (this.alignment === 'start') {
+      crossOffset += this.crossOffset;
+      if (verticalRTL) {
+        crossOffset += this.rootWidth - boundary[flipSide(crossSide)];
+      } else {
+        crossOffset += boundary[crossSide];
+      }
+    } else if (this.alignment === 'end') {
+      crossOffset -= this.crossOffset;
+      if (verticalRTL) {
+        crossOffset += this.rootWidth - boundary[crossSide] - rect[crossSize];
+      } else {
+        crossOffset += boundary[flipSide(crossSide)] - rect[crossSize];
+      }
+    } else {
+      crossOffset += (boundary[crossSize] - rect[crossSize]) / 2;
+      if (verticalRTL) {
+        crossOffset += this.rootWidth - boundary[flipSide(crossSide)];
+      } else {
+        crossOffset += boundary[crossSide];
+      }
+    }
+
+    return {
+      [crossSide]: crossOffset,
+    };
+  }
+
+  /**
+   * Handle arrow, both axis and cross
+   * @param rect floating size
+   * @returns position
+   */
+  private _calculateArrow(rect: IRect): IPosition {
+    const position: IPosition = {
+      top: 'auto',
+      left: 'auto',
+      right: 'auto',
+      bottom: 'auto',
+    };
+
+    if (!this.arrowSize) return position;
+
+    const crossSide = CROSS_SIDE[this.side];
+    const crossSize = CROSS_SIZE[this.side];
+
+    // axis
+    position[flipSide(this.side)] = -this.arrowSize;
+
+    // cross
+    if (this.alignment === 'start') {
+      position[crossSide] = Math.min(
+        this.arrowOffset,
+        rect[crossSize] - this.arrowSize
+      );
+    } else if (this.alignment === 'end') {
+      position[flipSide(crossSide)] = Math.min(
+        this.arrowOffset,
+        rect[crossSize] - this.arrowSize
+      );
+    } else {
+      position[crossSide] = (rect[crossSize] - this.arrowSize) / 2;
+    }
+
+    return position;
+  }
+}
+
 const measure = (
-  options: Pick<IOptions, 'scrollNode' | 'targetRef' | 'overlayRef'>
+  targetRef: IOptions['targetRef'],
+  overlayRef: IOptions['overlayRef'],
+  scrollNode?: IOptions['scrollNode']
 ) => {
   return new Promise<{ targetBoundary: IBoundary; overlayRect: IRect }>(
     (resolve) => {
       const main = () => {
         Promise.all([
-          measureTargetBoundary(options.targetRef, options.scrollNode),
-          measureOverlayRect(options.overlayRef),
+          measureTargetBoundary(targetRef, scrollNode),
+          measureOverlayRect(overlayRef),
         ]).then(([targetBoundary, overlayRect]) => {
           // Sometimes measure returns height/width 0. Best solution would be to use onLayout callback, but that might diverege from React Aria's useOverlayPosition API. Decide later, this works for now
           if (
@@ -231,7 +313,7 @@ const measureOverlayRect = (overlayRef: IOptions['overlayRef']) =>
     );
   });
 
-const getFlipSide = (side: ISide) => {
+const flipSide = (side: ISide) => {
   return {
     left: 'right',
     right: 'left',

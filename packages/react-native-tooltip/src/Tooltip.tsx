@@ -6,7 +6,7 @@ import { Portal } from '@crosscement/react-native-portal';
 import type { ITooltipProps } from './types';
 import { createScrollViewHook } from './utils';
 import { Polygon } from './Polygon';
-import { calculatePosition, PLACEMENTS } from '@crosscement/react-native-utils';
+import { isRTL, PLACEMENTS, Position } from '@crosscement/react-native-utils';
 
 type IStatus = 'closed' | 'opening' | 'opened' | 'closing';
 type IState = { status: IStatus };
@@ -91,7 +91,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
       requestAnimationFrame(this._layout);
       return;
     }
-    const { floating, arrow } = await calculatePosition({
+    const position = new Position({
       targetRef: this.targetRef,
       overlayRef: this.overlayRef,
       scrollNode: this.getScrollNode(),
@@ -100,9 +100,11 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
       crossOffset: this.props.crossOffset,
       arrowSize: this.props.arrowSize,
       arrowOffset: 0,
+      isRTL: isRTL(),
     });
-    this.overlayRef.current?.setNativeProps(floating);
-    this.arrowRef.current?.setNativeProps(arrow);
+    const { overlayPosition, arrowPosition } = await position.calculate();
+    this.overlayRef.current?.setNativeProps(overlayPosition);
+    this.arrowRef.current?.setNativeProps(arrowPosition);
   };
 
   dismiss = () => {
