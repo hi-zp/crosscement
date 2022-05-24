@@ -26,6 +26,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     hasPolygon: true,
     arrowSize: 8,
     arrowColor: 'red',
+    arrowOffset: 0,
     placement: 'bottom',
   };
 
@@ -99,7 +100,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
       mainOffset: this.props.mainOffset,
       crossOffset: this.props.crossOffset,
       arrowSize: this.props.arrowSize,
-      arrowOffset: 0,
+      arrowOffset: this.props.arrowOffset,
       isRTL: isRTL(),
     });
     const { overlayPosition, arrowPosition } = await position.calculate();

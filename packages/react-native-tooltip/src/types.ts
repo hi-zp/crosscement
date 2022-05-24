@@ -35,6 +35,7 @@ export interface ITooltipProps extends ViewProps {
   hasPolygon?: boolean;
   arrowSize?: number;
   arrowColor?: string;
+  arrowOffset?: number;
 }
 
 export type IScrollableView<T> = ComponentClass<

@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-tooltip",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "smart tooltip",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
