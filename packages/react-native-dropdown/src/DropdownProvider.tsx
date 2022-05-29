@@ -1,7 +1,7 @@
 import React, { createContext, isValidElement } from 'react';
 import { Portal } from '@crosscement/react-native-portal';
 
-export type IContext = {
+type IContext = {
   scroll?: React.RefObject<any>;
 };
 
@@ -11,7 +11,7 @@ interface IProps {
   scroll?: IContext['scroll'];
 }
 
-export const DropdownProdiver: React.FC<IProps> = ({ scroll, children }) => {
+export const DropdownProvider: React.FC<IProps> = ({ scroll, children }) => {
   const context: IContext = {
     scroll,
   };

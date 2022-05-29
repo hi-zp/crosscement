@@ -33,10 +33,3 @@ export interface IDropdownProps extends ViewProps {
 export type IScrollableView<T> = ComponentClass<
   SectionListProps<T> | FlatListProps<T> | ScrollViewProps
 >;
-
-export type IBoundary = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};

@@ -1,6 +1,6 @@
 import React, { ComponentClass, useRef } from 'react';
 import type { ScrollViewProps } from 'react-native';
-import { DropdownProdiver } from './context';
+import { DropdownProvider } from './DropdownProvider';
 import { Portal } from '@crosscement/react-native-portal';
 import type { IRootElementType, IScrollableView } from './types';
 
@@ -52,14 +52,14 @@ export function createScrollableHook<P = {}, T = IScrollableView<P>>(
     // </Portal.Host>
 
     return (
-      <DropdownProdiver scroll={props.forwardedRef ?? forwardedRef}>
+      <DropdownProvider scroll={props.forwardedRef ?? forwardedRef}>
         {isVirtualizedList(elementType) ? null : (
           // @ts-ignore
           <Component {...props} ref={props.forwardedRef ? ref : forwardedRef}>
             <Portal.Host>{props.children}</Portal.Host>
           </Component>
         )}
-      </DropdownProdiver>
+      </DropdownProvider>
     );
   }) as unknown as T;
 }
@@ -82,31 +82,3 @@ export function createScrollViewHook<T = ComponentClass<ScrollViewProps>>(
 // >(Component: T) {
 //   return createScrollableHook(Component, 'SectionList');
 // }
-
-interface IHandleRetryOptions {
-  retryAttempts: number;
-  retryDelay: number;
-}
-
-export function handleRetry(
-  options: IHandleRetryOptions,
-  handler: (breakOff: () => void) => void
-) {
-  const { retryDelay, retryAttempts } = options;
-  const states = { through: false, attempt: 0, timer: 0 };
-
-  const executor = () => {
-    clearTimeout(states.timer);
-    // breakOff callback
-    handler(() => (states.through = true));
-    // check
-    if (!states.through && states.attempt < retryAttempts) {
-      states.timer = setTimeout(() => {
-        states.attempt += 1;
-        executor();
-      }, retryDelay) as any;
-    }
-  };
-
-  executor();
-}

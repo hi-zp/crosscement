@@ -1,16 +1,11 @@
 import React, { createRef } from 'react';
-import {
-  Animated,
-  Dimensions,
-  I18nManager,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
-import { DropdownContext } from './context';
+import { DropdownContext } from './DropdownProvider';
 import { Portal } from '@crosscement/react-native-portal';
-import type { IBoundary, IDropdownProps } from './types';
-import { createScrollViewHook, handleRetry } from './utils';
+import type { IDropdownProps } from './types';
+import { createScrollViewHook } from './utils';
+import { areEqual, Position } from '@crosscement/react-native-utils';
 
 type IStatus = 'closed' | 'opening' | 'opened' | 'closing';
 type IState = { status: IStatus };
@@ -28,8 +23,8 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
   };
 
   translateY = new Animated.Value(0);
-  target = createRef<View>();
-  container = createRef<View>();
+  targetRef = createRef<View>();
+  containerRef = createRef<View>();
   expand = createRef<View>();
 
   constructor(props: IDropdownProps) {
@@ -55,24 +50,43 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
   componentDidUpdate(prevProps: IDropdownProps) {
     if (this.props.visible !== prevProps.visible) {
       this.props.visible ? this.show() : this.dismiss();
+    } else if (
+      !areEqual(this.props, prevProps) &&
+      this.state.status === 'opened'
+    ) {
+      this._showingSubsequent();
     }
   }
 
   show = () => {
-    this.setState({ status: 'opening' }, async () => {
-      const boundary = await this._getBoundary();
-      this.container.current?.setNativeProps({
-        top: boundary.top,
-        left: 0,
-        width: Dimensions.get('screen').width,
-        height: this._hasOverlay ? Dimensions.get('screen').height : 'auto',
-      });
-      // delay
-      const expandHeight = await this._getExpandHeight();
-      this._in(() => {
-        this.setState({ status: 'opened' }, this.props.onShow);
-      }, expandHeight);
+    this.setState({ status: 'opening' }, this._showingSubsequent);
+  };
+
+  private _showingSubsequent = async () => {
+    if (!this.containerRef.current || !this.targetRef.current) {
+      requestAnimationFrame(this._showingSubsequent);
+      return;
+    }
+
+    // calculate floating position
+    const position = new Position({
+      placement: 'bottom',
+      targetRef: this.targetRef,
+      overlayRef: this.containerRef,
     });
+    const { overlayPosition } = await position.calculate();
+    this.containerRef.current?.setNativeProps({
+      top: overlayPosition.top,
+      left: 0,
+      width: Dimensions.get('screen').width,
+      height: this._hasOverlay ? Dimensions.get('screen').height : 'auto',
+    });
+
+    // calculate expand height
+    const expandHeight = await this._getExpandHeight();
+    this._in(() => {
+      this.setState({ status: 'opened' }, this.props.onShow);
+    }, expandHeight);
   };
 
   dismiss = () => {
@@ -87,7 +101,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
   private _in = (onFinished: () => void, expandHeight: number) => {
     // prepare
     this.translateY.setValue(-expandHeight);
-    this.container.current?.setNativeProps({ opacity: 1 });
+    this.containerRef.current?.setNativeProps({ opacity: 1 });
     // animation
     Animated.timing(this.translateY, {
       toValue: 0,
@@ -105,46 +119,15 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     }).start(onFinished);
   };
 
-  private _getBoundary = (): Promise<IBoundary> => {
-    return new Promise((resolve) => {
-      if (this.context.scroll) {
-        const scrollable = this.context.scroll.current.getScrollableNode
-          ? this.context.scroll.current.getScrollableNode()
-          : this.context.scroll.current;
-        this.target.current?.measureLayout(
-          scrollable,
-          (left, top, width, height) => {
-            resolve({
-              top: height + top,
-              left: I18nManager.isRTL ? width - left : left,
-              width,
-              height,
-            });
-          },
-          () => null
-        );
-      } else {
-        this.target.current?.measureInWindow((x, y, width, height) => {
-          const top = height + y;
-          const left = I18nManager.isRTL ? width - x : x;
-          resolve({ top, left, width, height });
-        });
-      }
-    });
-  };
-
   private _getExpandHeight = (): Promise<number> => {
     return new Promise((resolve) => {
       if (this.props.expandHeight) {
         return resolve(this.props.expandHeight);
       }
-      handleRetry({ retryDelay: 10, retryAttempts: 5 }, (breakOff) => {
-        this.expand.current?.measure((_x, _y, _width, height) => {
-          if (height !== 0) {
-            breakOff();
-            resolve(height);
-          }
-        });
+      this.expand.current?.measure((_x, _y, _width, height) => {
+        if (height !== 0) {
+          resolve(height);
+        }
       });
     });
   };
@@ -167,7 +150,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
   private _renderContainer() {
     const { expand, expandHeight, expandStyle } = this.props;
     return (
-      <View ref={this.container} style={styles.expandContainer}>
+      <View ref={this.containerRef} style={styles.expandContainer}>
         {this._hasOverlay && this._renderOverlay()}
         <Animated.View
           ref={this.expand}
@@ -187,7 +170,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     const { style, children } = this.props;
     return (
       <>
-        <View collapsable={false} ref={this.target} style={style}>
+        <View collapsable={false} ref={this.targetRef} style={style}>
           {children}
         </View>
         <Portal>
