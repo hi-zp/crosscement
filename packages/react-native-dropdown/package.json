@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-dropdown",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "smart dropdown",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

@@ -47,6 +47,16 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     }
   }
 
+  private _getScrollNode = () => {
+    if (this.context.scroll) {
+      return this.context.scroll.current.getScrollableNode
+        ? this.context.scroll.current.getScrollableNode()
+        : this.context.scroll.current;
+    } else {
+      return undefined;
+    }
+  };
+
   componentDidUpdate(prevProps: IDropdownProps) {
     if (this.props.visible !== prevProps.visible) {
       this.props.visible ? this.show() : this.dismiss();
@@ -73,6 +83,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
       placement: 'bottom',
       targetRef: this.targetRef,
       overlayRef: this.containerRef,
+      scrollNode: this._getScrollNode(),
     });
     const { overlayPosition } = await position.calculate();
     this.containerRef.current?.setNativeProps({
