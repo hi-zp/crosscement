@@ -91,7 +91,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     this.setState({ status: 'opening' }, this._showingSubsequent);
   };
 
-  private getScrollNode = () => {
+  private _getScrollNode = () => {
     if (this.context.scroll) {
       return this.context.scroll.current.getScrollableNode
         ? this.context.scroll.current.getScrollableNode()
@@ -109,7 +109,7 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     const position = new Position({
       targetRef: this.targetRef,
       overlayRef: this.overlayRef,
-      scrollNode: this.getScrollNode(),
+      scrollNode: this._getScrollNode(),
       placement: this.props.placement,
       mainOffset: this.props.mainOffset,
       crossOffset: this.props.crossOffset,
