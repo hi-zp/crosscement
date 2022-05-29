@@ -1,26 +1,22 @@
-# @crosscement/react-native-backdrop
+# @crosscement/react-native-utils
 
-A simple and easy to use backdrop component.
 
-[![npm](https://img.shields.io/npm/v/@crosscement/react-native-backdrop)](https://www.npmjs.com/package/@crosscement/react-native-backdrop)
+[![npm](https://img.shields.io/npm/v/@crosscement/react-native-utils)](https://www.npmjs.com/package/@crosscement/react-native-utils)
 
 ## Installation
 
 ```sh
-npm install @crosscement/react-native-backdrop
+npm install @crosscement/react-native-utils
 ```
 
 ## Usage
 
 ```tsx
-<Backdrop
-  visible={overlayVisible}
-  onPress={this.dismiss}
-  animationDuration={props.animationDuration}
-  opacity={props.overlayOpacity}
-  pointerEvents={props.overlayPointerEvents}
-  backgroundColor={props.overlayBackgroundColor}
-/>
+// calculate overlay
+const position = new Position({})
+
+// RTL
+isRTL()
 ```
 
 ## License

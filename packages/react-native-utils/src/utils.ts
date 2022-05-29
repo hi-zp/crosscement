@@ -1,16 +1,38 @@
-import { I18nManager } from 'react-native';
-
-export const isRTL = () => {
-  // To support previous RN versions. Newer versions use below getConstants()
-  if (I18nManager.isRTL !== undefined) {
-    return I18nManager.isRTL;
+export function shallowDiffers(prev: Object, next: Object): boolean {
+  for (const attribute in prev) {
+    if (!(attribute in next)) {
+      return true;
+    }
   }
-
-  // @ts-ignore - RN web only
-  if (I18nManager.getConstants) {
-    // @ts-ignore - RN web only
-    return I18nManager.getConstants().isRTL;
+  for (const attribute in next) {
+    // @ts-ignore
+    if (prev[attribute] !== next[attribute]) {
+      return true;
+    }
   }
-
   return false;
-};
+}
+
+export function areEqual(prevProps: Object, nextProps: Object): boolean {
+  const { style: prevStyle, ...prevRest } = prevProps as any;
+  const { style: nextStyle, ...nextRest } = nextProps as any;
+
+  return (
+    !shallowDiffers(prevStyle, nextStyle) && !shallowDiffers(prevRest, nextRest)
+  );
+}
+
+export function pick<T extends object, U extends keyof T>(
+  props: T,
+  paths: ReadonlyArray<U>
+): Pick<T, U> {
+  let index = -1,
+    length = paths.length,
+    result = {} as Pick<T, U>;
+
+  while (++index < length) {
+    let path = paths[index];
+    result[path] = props[path];
+  }
+  return result;
+}
