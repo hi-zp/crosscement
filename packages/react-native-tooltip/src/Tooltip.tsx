@@ -1,15 +1,29 @@
 import React, { createRef } from 'react';
 import { Animated, View } from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
-import { TooltipContext } from './TooltipProdiver';
+import { TooltipContext } from './TooltipProvider';
 import { Portal } from '@crosscement/react-native-portal';
 import type { ITooltipProps } from './types';
 import { createScrollViewHook } from './utils';
 import { Polygon } from './Polygon';
-import { isRTL, PLACEMENTS, Position } from '@crosscement/react-native-utils';
+import {
+  areEqual,
+  isRTL,
+  pick,
+  PLACEMENTS,
+  Position,
+} from '@crosscement/react-native-utils';
 
 type IStatus = 'closed' | 'opening' | 'opened' | 'closing';
 type IState = { status: IStatus };
+
+const UpdateEffectProps: Array<keyof ITooltipProps> = [
+  'placement',
+  'mainOffset',
+  'crossOffset',
+  'arrowOffset',
+  'arrowSize',
+];
 
 export class Tooltip extends React.Component<ITooltipProps, IState> {
   static placements = PLACEMENTS;
@@ -62,19 +76,19 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
   componentDidUpdate(prevProps: ITooltipProps) {
     if (this.props.visible !== prevProps.visible) {
       this.props.visible ? this.show() : this.dismiss();
-    }
-    if (!areEqual(this.props, prevProps) && this.state.status === 'opened') {
-      this._layout();
+    } else if (
+      !areEqual(
+        pick(this.props, UpdateEffectProps),
+        pick(prevProps, UpdateEffectProps)
+      ) &&
+      (this.state.status === 'opened' || this.state.status === 'opening')
+    ) {
+      this._showingSubsequent();
     }
   }
 
   show = () => {
-    this.setState({ status: 'opening' }, async () => {
-      await this._layout();
-      this._in(() => {
-        this.setState({ status: 'opened' }, this.props.onShow);
-      });
-    });
+    this.setState({ status: 'opening' }, this._showingSubsequent);
   };
 
   private getScrollNode = () => {
@@ -87,9 +101,9 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     }
   };
 
-  private _layout = async () => {
+  private _showingSubsequent = async () => {
     if (!this.overlayRef.current || !this.targetRef.current) {
-      requestAnimationFrame(this._layout);
+      requestAnimationFrame(this._showingSubsequent);
       return;
     }
     const position = new Position({
@@ -106,6 +120,10 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
     const { overlayPosition, arrowPosition } = await position.calculate();
     this.overlayRef.current?.setNativeProps(overlayPosition);
     this.arrowRef.current?.setNativeProps(arrowPosition);
+
+    this._in(() => {
+      this.setState({ status: 'opened' }, this.props.onShow);
+    });
   };
 
   dismiss = () => {
@@ -195,28 +213,4 @@ export class Tooltip extends React.Component<ITooltipProps, IState> {
   }
 
   static createScrollViewHook = createScrollViewHook;
-}
-
-function shallowDiffers(prev: Object, next: Object): boolean {
-  for (const attribute in prev) {
-    if (!(attribute in next)) {
-      return true;
-    }
-  }
-  for (const attribute in next) {
-    // @ts-ignore
-    if (prev[attribute] !== next[attribute]) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function areEqual(prevProps: Object, nextProps: Object): boolean {
-  const { style: prevStyle, ...prevRest } = prevProps as any;
-  const { style: nextStyle, ...nextRest } = nextProps as any;
-
-  return (
-    !shallowDiffers(prevStyle, nextStyle) && !shallowDiffers(prevRest, nextRest)
-  );
 }

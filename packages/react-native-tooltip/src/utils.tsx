@@ -1,6 +1,6 @@
 import React, { ComponentClass, useRef } from 'react';
 import { ScrollViewProps } from 'react-native';
-import { TooltipProdiver } from './TooltipProdiver';
+import { TooltipProvider } from './TooltipProvider';
 import { Portal } from '@crosscement/react-native-portal';
 import type { IRootElementType, IScrollableView } from './types';
 
@@ -20,14 +20,14 @@ export function createScrollableHook<P = {}, T = IScrollableView<P>>(
     const forwardedRef = useRef();
 
     return (
-      <TooltipProdiver scroll={props.forwardedRef ?? forwardedRef}>
+      <TooltipProvider scroll={props.forwardedRef ?? forwardedRef}>
         {isVirtualizedList(elementType) ? null : (
           // @ts-ignore
           <Component {...props} ref={props.forwardedRef ? ref : forwardedRef}>
             <Portal.Host>{props.children}</Portal.Host>
           </Component>
         )}
-      </TooltipProdiver>
+      </TooltipProvider>
     );
   }) as unknown as T;
 }
