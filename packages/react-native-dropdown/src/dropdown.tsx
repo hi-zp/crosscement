@@ -1,14 +1,22 @@
 import React, { createRef } from 'react';
-import { Animated, Dimensions, StyleSheet, View } from 'react-native';
+import {
+  Animated,
+  Dimensions,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { Backdrop } from '@crosscement/react-native-backdrop';
 import { DropdownContext } from './DropdownProvider';
 import { Portal } from '@crosscement/react-native-portal';
 import type { IDropdownProps } from './types';
 import { createScrollViewHook } from './utils';
-import { areEqual, Position } from '@crosscement/react-native-utils';
+import { areEqual, pick, Position } from '@crosscement/react-native-utils';
 
 type IStatus = 'closed' | 'opening' | 'opened' | 'closing';
 type IState = { status: IStatus };
+
+const UpdateEffectProps: Array<keyof IDropdownProps> = ['expandHeight'];
 
 export class Dropdown extends React.Component<IDropdownProps, IState> {
   static defaultProps: Partial<IDropdownProps> = {
@@ -17,6 +25,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     onShow: () => {},
     onDismiss: () => {},
     useNativeDriver: true,
+    constraintWith: false,
     hasOverlay: true,
     overlayOpacity: 0.5,
     overlayBackgroundColor: '#000',
@@ -25,7 +34,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
   translateY = new Animated.Value(0);
   targetRef = createRef<View>();
   containerRef = createRef<View>();
-  expand = createRef<View>();
+  expandRef = createRef<View>();
 
   constructor(props: IDropdownProps) {
     super(props);
@@ -61,8 +70,11 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     if (this.props.visible !== prevProps.visible) {
       this.props.visible ? this.show() : this.dismiss();
     } else if (
-      !areEqual(this.props, prevProps) &&
-      this.state.status === 'opened'
+      !areEqual(
+        pick(this.props, UpdateEffectProps),
+        pick(prevProps, UpdateEffectProps)
+      ) &&
+      (this.state.status === 'opened' || this.state.status === 'opening')
     ) {
       this._showingSubsequent();
     }
@@ -85,13 +97,21 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
       overlayRef: this.containerRef,
       scrollNode: this._getScrollNode(),
     });
+
     const { overlayPosition } = await position.calculate();
-    this.containerRef.current?.setNativeProps({
+
+    const expandRootStyle: ViewStyle = {
       top: overlayPosition.top,
-      left: 0,
-      width: Dimensions.get('screen').width,
       height: this._hasOverlay ? Dimensions.get('screen').height : 'auto',
-    });
+    };
+
+    if (this.props.constraintWith) {
+      const boundary = await position.getTargetBoundary();
+      expandRootStyle.left = boundary.left;
+      expandRootStyle.width = boundary.width ?? 0;
+    }
+
+    this.containerRef.current?.setNativeProps(expandRootStyle);
 
     // calculate expand height
     const expandHeight = await this._getExpandHeight();
@@ -135,7 +155,7 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
       if (this.props.expandHeight) {
         return resolve(this.props.expandHeight);
       }
-      this.expand.current?.measure((_x, _y, _width, height) => {
+      this.expandRef.current?.measure((_x, _y, _width, height) => {
         if (height !== 0) {
           resolve(height);
         }
@@ -158,13 +178,27 @@ export class Dropdown extends React.Component<IDropdownProps, IState> {
     );
   }
 
+  private get _defaultContainerStyle(): ViewStyle {
+    if (!this.props.constraintWith) {
+      return {
+        left: 0,
+        width: Dimensions.get('screen').width,
+      };
+    } else {
+      return {};
+    }
+  }
+
   private _renderContainer() {
     const { expand, expandHeight, expandStyle } = this.props;
     return (
-      <View ref={this.containerRef} style={styles.expandContainer}>
+      <View
+        ref={this.containerRef}
+        style={[styles.expandContainer, this._defaultContainerStyle]}
+      >
         {this._hasOverlay && this._renderOverlay()}
         <Animated.View
-          ref={this.expand}
+          ref={this.expandRef}
           style={[
             expandStyle,
             { transform: [{ translateY: this.translateY }] },

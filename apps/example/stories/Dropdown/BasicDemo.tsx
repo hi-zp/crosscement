@@ -51,11 +51,14 @@ export function BasicDemo() {
               />
             </View>
           }
+          constraintWith
+          hasOverlay={false}
         >
           <Button
             title="show static container with ref"
             onPress={() => dropdownRef.current?.show()}
           />
+          <View style={{ backgroundColor: 'red', height: 1 }} />
         </Dropdown>
       </View>
     </View>
