@@ -1,10 +1,11 @@
 import React, { createContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { PortalManager } from './PortalManager';
+import { generateGUID } from './utils';
 
 type IAction = {
   type: 'mount' | 'update' | 'unmount';
-  key: number;
+  key: string;
   children?: React.ReactNode;
 };
 
@@ -13,9 +14,9 @@ type IProps = {
 };
 
 export type IContext = {
-  mount: (children: React.ReactNode) => number;
-  update: (key: number, children: React.ReactNode) => void;
-  unmount: (key: number) => void;
+  mount: (children: React.ReactNode) => string;
+  update: (key: string, children: React.ReactNode) => void;
+  unmount: (key: string) => void;
 };
 
 export const PortalContext = createContext<IContext>({} as IContext);
@@ -45,7 +46,7 @@ export const PortalContext = createContext<IContext>({} as IContext);
  * Here any `Portal` elements under `<App />` are rendered alongside `<App />` and will appear above `<App />` like a `Modal`.
  */
 export class PortalHost extends React.Component<IProps> {
-  nextKey = 0;
+  nextKey = generateGUID();
   queue: Array<IAction> = [];
   manager?: PortalManager = undefined;
 
@@ -75,8 +76,8 @@ export class PortalHost extends React.Component<IProps> {
     this.manager = manager;
   };
 
-  mount = (children: React.ReactNode): number => {
-    const key = this.nextKey++;
+  mount = (children: React.ReactNode): string => {
+    const key = generateGUID();
 
     if (this.manager) {
       this.manager.mount(key, children);
@@ -87,7 +88,7 @@ export class PortalHost extends React.Component<IProps> {
     return key;
   };
 
-  update = (key: number, children: React.ReactNode) => {
+  update = (key: string, children: React.ReactNode) => {
     if (this.manager) {
       this.manager.update(key, children);
     } else {
@@ -104,7 +105,7 @@ export class PortalHost extends React.Component<IProps> {
     }
   };
 
-  unmount = (key: number) => {
+  unmount = (key: string) => {
     if (this.manager) {
       this.manager.unmount(key);
     } else {

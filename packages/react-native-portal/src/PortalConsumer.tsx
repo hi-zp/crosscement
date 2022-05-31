@@ -6,7 +6,7 @@ type IProps = {
 };
 
 export class PortalConsumer extends React.Component<IProps> {
-  key?: number = undefined;
+  key?: string = undefined;
 
   async componentDidMount() {
     this.checkManager();
@@ -20,13 +20,13 @@ export class PortalConsumer extends React.Component<IProps> {
   componentDidUpdate() {
     this.checkManager();
 
-    this.props.manager.update(this.key as number, this.props.children);
+    this.props.manager.update(this.key as string, this.props.children);
   }
 
   componentWillUnmount() {
     this.checkManager();
 
-    this.props.manager.unmount(this.key as number);
+    this.props.manager.unmount(this.key as string);
   }
 
   checkManager() {

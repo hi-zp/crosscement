@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-type IProtal = { key: number; children: React.ReactNode };
+type IProtal = { key: string; children: React.ReactNode };
 type IState = { portals: IProtal[] };
 
 export class PortalManager extends React.PureComponent<{}, IState> {
@@ -12,13 +12,13 @@ export class PortalManager extends React.PureComponent<{}, IState> {
     };
   }
 
-  mount = (key: number, children: React.ReactNode) => {
+  mount = (key: string, children: React.ReactNode) => {
     this.setState((state) => ({
       portals: [...state.portals, { key, children }],
     }));
   };
 
-  update = (key: number, children: React.ReactNode) =>
+  update = (key: string, children: React.ReactNode) =>
     this.setState((state) => ({
       portals: state.portals.map((item) => {
         if (item.key === key) {
@@ -28,7 +28,7 @@ export class PortalManager extends React.PureComponent<{}, IState> {
       }),
     }));
 
-  unmount = (key: number) =>
+  unmount = (key: string) =>
     this.setState((state) => ({
       portals: state.portals.filter((item) => item.key !== key),
     }));
