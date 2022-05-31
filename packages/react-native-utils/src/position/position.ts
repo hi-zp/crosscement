@@ -27,6 +27,9 @@ export class Position {
   private overlayRef: IOptions['overlayRef'];
   private scrollNode: IOptions['scrollNode'];
 
+  private _targetBoundary: IBoundary;
+  private _overlayRect: IRect;
+
   constructor(public readonly options: IOptions) {
     // initial option values
     this.targetRef = options.targetRef;
@@ -47,12 +50,19 @@ export class Position {
     this.alignment = alignment;
   }
 
+  /**
+   * calculate floating & reference
+   * @returns position information
+   */
   async calculate() {
     const { targetBoundary, overlayRect } = await measure(
       this.targetRef,
       this.overlayRef,
       this.scrollNode
     );
+
+    this._targetBoundary = targetBoundary;
+    this._overlayRect = overlayRect;
 
     const overlayPosition = {
       ...this._calculateAxis(targetBoundary, overlayRect),
@@ -65,6 +75,14 @@ export class Position {
       overlayPosition,
       arrowPosition,
     };
+  }
+
+  public async getTargetBoundary() {
+    return this._targetBoundary ?? measureTargetBoundary(this.targetRef);
+  }
+
+  public async getOverlayRect() {
+    return this._overlayRect ?? measureOverlayRect(this.overlayRef);
   }
 
   /**
