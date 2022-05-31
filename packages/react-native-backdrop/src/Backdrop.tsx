@@ -61,7 +61,7 @@ export class Backdrop extends React.PureComponent<BackdropProps> {
   }
 
   render(): React.ReactNode {
-    const { onPress, pointerEvents, backgroundColor = '#000' } = this.props;
+    const { onPress, pointerEvents, backgroundColor } = this.props;
     const { opacity } = this;
     return (
       <Animated.View
