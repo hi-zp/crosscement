@@ -1,22 +1,8 @@
 import React from 'react';
-import {
-  Animated,
-  StyleSheet,
-  TouchableOpacity,
-  ViewProps,
-} from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { IBackdropProps } from './types';
 
-export interface BackdropProps {
-  visible: boolean;
-  opacity: number;
-  onPress?: () => void;
-  backgroundColor?: string;
-  animationDuration?: number;
-  pointerEvents?: ViewProps['pointerEvents'];
-  useNativeDriver?: boolean;
-}
-
-const defaultProps: Partial<BackdropProps> = {
+const defaultProps: Partial<IBackdropProps> = {
   backgroundColor: '#000',
   opacity: 0.5,
   animationDuration: 200,
@@ -25,7 +11,7 @@ const defaultProps: Partial<BackdropProps> = {
   onPress: () => {},
 };
 
-export class Backdrop extends React.PureComponent<BackdropProps> {
+export class Backdrop extends React.PureComponent<IBackdropProps> {
   static defaultProps = defaultProps;
 
   opacity = new Animated.Value(0);
@@ -34,7 +20,7 @@ export class Backdrop extends React.PureComponent<BackdropProps> {
     this.opacity.setValue(value);
   };
 
-  componentDidUpdate(prevProps: BackdropProps) {
+  componentDidUpdate(prevProps: IBackdropProps) {
     const { visible } = this.props;
     if (prevProps.visible !== visible) {
       this._inOut();
