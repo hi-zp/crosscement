@@ -29,6 +29,7 @@ argsEnhancers.forEach((enhancer) => addArgsEnhancer(enhancer));
 const getStories = () => {
   return [
     require("../stories/Dropdown/Dropdown.stories"),
+    require("../stories/Modal/Modal.stories"),
     require("../stories/Tooltip/Tooltip.stories"),
   ];
 };
