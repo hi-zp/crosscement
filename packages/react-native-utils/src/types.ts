@@ -1,6 +1,15 @@
 export type IAlignment = 'start' | 'end';
 export type ISide = 'top' | 'right' | 'bottom' | 'left';
-export type IAlignedPlacement = `${ISide}-${IAlignment}`;
+// export type IAlignedPlacement = `${ISide}-${IAlignment}`;
+export type IAlignedPlacement =
+  | 'top-start'
+  | 'top-end'
+  | 'right-start'
+  | 'right-end'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left-start'
+  | 'left-end';
 export type IPlacement = ISide | IAlignedPlacement;
 
 export interface IRect {
