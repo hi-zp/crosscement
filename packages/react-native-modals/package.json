@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-modals",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "smart modals",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -46,7 +46,7 @@
   "dependencies": {
     "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
     "@crosscement/react-native-portal": "1.0.0-alpha.0",
-    "@crosscement/react-native-utils": "1.0.0-alpha.1"
+    "@crosscement/react-native-utils": "1.0.0-alpha.2"
   },
   "jest": {
     "preset": "react-native",

@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-dropdown",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "smart dropdown",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -52,7 +52,7 @@
   "dependencies": {
     "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
     "@crosscement/react-native-portal": "1.0.0-alpha.0",
-    "@crosscement/react-native-utils": "1.0.0-alpha.1"
+    "@crosscement/react-native-utils": "1.0.0-alpha.2"
   },
   "jest": {
     "preset": "react-native",
