@@ -1,7 +1,7 @@
 {
-  "name": "@crosscement/react-native-dropdown",
-  "version": "1.0.0-alpha.7",
-  "description": "smart dropdown",
+  "name": "crosscement",
+  "version": "1.0.0-alpha.0",
+  "description": "smart backdrop",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -22,20 +22,14 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it",
-    "example": "yarn --cwd example",
-    "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "release": "release-it"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hi-zp/crosscement.git"
-  },
+  "repository": "https://github.com/hi-zp/crosscement",
   "author": "hi-zp <987107833@qq.com> (https://github.com/hi-zp)",
   "license": "MIT",
   "bugs": {
@@ -51,7 +45,10 @@
   },
   "dependencies": {
     "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
+    "@crosscement/react-native-dropdown": "1.0.0-alpha.7",
+    "@crosscement/react-native-modals": "1.0.0-alpha.2",
     "@crosscement/react-native-portal": "1.0.0-alpha.0",
+    "@crosscement/react-native-tooltip": "1.0.0-alpha.7",
     "@crosscement/react-native-utils": "1.0.0-alpha.3"
   },
   "jest": {
@@ -105,9 +102,7 @@
           "trailingComma": "es5",
           "useTabs": false
         }
-      ],
-      "react-hooks/exhaustive-deps": 0,
-      "react-native/no-inline-styles": 0
+      ]
     }
   },
   "eslintIgnore": [

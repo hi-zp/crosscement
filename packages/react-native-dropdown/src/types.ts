@@ -1,18 +1,5 @@
-import type { ReactNode, ComponentClass } from 'react';
-import type {
-  StyleProp,
-  ViewStyle,
-  FlatListProps,
-  SectionListProps,
-  ScrollViewProps,
-  ViewProps,
-} from 'react-native';
-
-export type IRootElementType =
-  | 'View'
-  | 'Scollview'
-  | 'FlatList'
-  | 'SectionList';
+import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle, ViewProps } from 'react-native';
 
 export interface IDropdownProps extends ViewProps {
   visible?: boolean;
@@ -30,7 +17,3 @@ export interface IDropdownProps extends ViewProps {
   overlayBackgroundColor?: string;
   overlayOpacity?: number;
 }
-
-export type IScrollableView<T> = ComponentClass<
-  SectionListProps<T> | FlatListProps<T> | ScrollViewProps
->;

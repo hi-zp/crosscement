@@ -1,3 +1,6 @@
+import { ComponentClass } from 'react';
+import { FlatListProps, ScrollViewProps, SectionListProps } from 'react-native';
+
 export type IAlignment = 'start' | 'end';
 export type ISide = 'top' | 'right' | 'bottom' | 'left';
 // export type IAlignedPlacement = `${ISide}-${IAlignment}`;
@@ -46,3 +49,7 @@ export type IMeasureResult = {
   height: number;
   width: number;
 };
+
+export type IScrollableView<T> = ComponentClass<
+  SectionListProps<T> | FlatListProps<T> | ScrollViewProps
+>;

@@ -17,7 +17,7 @@ export function WithNestedScollViewDemo() {
   return (
     <ScrollView>
       <View style={{ height: 500 }} />
-      <XScrollView ref={ref} style={{ height: 300 }}>
+      <XScrollView ref={ref} style={{ height: 300 }} nestedScrollEnabled>
         <View style={{ height: 500, backgroundColor: 'pink' }} />
         <View>
           <Dropdown

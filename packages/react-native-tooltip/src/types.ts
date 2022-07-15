@@ -1,19 +1,6 @@
-import type { ReactNode, ComponentClass } from 'react';
-import type {
-  StyleProp,
-  ViewStyle,
-  FlatListProps,
-  SectionListProps,
-  ScrollViewProps,
-  ViewProps,
-} from 'react-native';
+import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle, ViewProps } from 'react-native';
 import { IPlacement } from '@crosscement/react-native-utils';
-
-export type IRootElementType =
-  | 'View'
-  | 'Scollview'
-  | 'FlatList'
-  | 'SectionList';
 
 export interface ITooltipProps extends ViewProps {
   visible?: boolean;
@@ -37,7 +24,3 @@ export interface ITooltipProps extends ViewProps {
   arrowColor?: string;
   arrowOffset?: number;
 }
-
-export type IScrollableView<T> = ComponentClass<
-  SectionListProps<T> | FlatListProps<T> | ScrollViewProps
->;

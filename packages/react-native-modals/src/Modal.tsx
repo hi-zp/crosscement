@@ -68,7 +68,11 @@ export class Modal extends React.Component<IModalProps, IState> {
   }
 
   private onHardwareBackPress = (): boolean => {
-    return this.props.onHardwareBackPress();
+    if (this.props.onHardwareBackPress) {
+      return this.props.onHardwareBackPress();
+    }
+    this.dismiss();
+    return true;
   };
 
   public show = () => {

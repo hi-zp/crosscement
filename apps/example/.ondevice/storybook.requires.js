@@ -24,13 +24,16 @@ if (parameters) {
   addParameters(parameters);
 }
 
-argsEnhancers.forEach((enhancer) => addArgsEnhancer(enhancer));
+// temporary fix for https://github.com/storybookjs/react-native/issues/327 whilst the issue is investigated
+try {
+  argsEnhancers.forEach((enhancer) => addArgsEnhancer(enhancer));
+} catch {}
 
 const getStories = () => {
   return [
-    require("../stories/Dropdown/Dropdown.stories"),
-    require("../stories/Modal/Modal.stories"),
-    require("../stories/Tooltip/Tooltip.stories"),
+    require("../stories/Dropdown/Dropdown.stories.tsx"),
+    require("../stories/Modal/Modal.stories.tsx"),
+    require("../stories/Tooltip/Tooltip.stories.tsx"),
   ];
 };
 
