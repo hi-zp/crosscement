@@ -1,6 +1,6 @@
 {
   "name": "@crosscement/react-native-utils",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "smart backdrop",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

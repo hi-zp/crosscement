@@ -1,11 +1,11 @@
 import React, { createContext } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { generateGUID } from '@crosscement/react-native-utils';
 import { PortalManager } from './PortalManager';
-import { generateGUID } from './utils';
 
 type IAction = {
   type: 'mount' | 'update' | 'unmount';
-  key: string;
+  prefix: string;
   children?: React.ReactNode;
 };
 
@@ -15,8 +15,8 @@ type IProps = {
 
 export type IContext = {
   mount: (children: React.ReactNode) => string;
-  update: (key: string, children: React.ReactNode) => void;
-  unmount: (key: string) => void;
+  update: (prefix: string, children: React.ReactNode) => void;
+  unmount: (prefix: string) => void;
 };
 
 export const PortalContext = createContext<IContext>({} as IContext);
@@ -46,7 +46,6 @@ export const PortalContext = createContext<IContext>({} as IContext);
  * Here any `Portal` elements under `<App />` are rendered alongside `<App />` and will appear above `<App />` like a `Modal`.
  */
 export class PortalHost extends React.Component<IProps> {
-  nextKey = generateGUID();
   queue: Array<IAction> = [];
   manager?: PortalManager = undefined;
 
@@ -59,13 +58,13 @@ export class PortalHost extends React.Component<IProps> {
       if (action) {
         switch (action.type) {
           case 'mount':
-            manager.mount(action.key, action.children);
+            manager.mount(action.prefix, action.children);
             break;
           case 'update':
-            manager.update(action.key, action.children);
+            manager.update(action.prefix, action.children);
             break;
           case 'unmount':
-            manager.unmount(action.key);
+            manager.unmount(action.prefix);
             break;
         }
       }
@@ -76,25 +75,27 @@ export class PortalHost extends React.Component<IProps> {
     this.manager = manager;
   };
 
-  mount = (children: React.ReactNode): string => {
-    const key = generateGUID();
-
+  mount = (
+    children: React.ReactNode,
+    prefix: string = generateGUID()
+  ): string => {
     if (this.manager) {
-      this.manager.mount(key, children);
+      this.manager.mount(prefix, children);
     } else {
-      this.queue.push({ type: 'mount', key, children });
+      this.queue.push({ type: 'mount', prefix, children });
     }
 
-    return key;
+    return prefix;
   };
 
-  update = (key: string, children: React.ReactNode) => {
+  update = (prefix: string, children: React.ReactNode) => {
     if (this.manager) {
-      this.manager.update(key, children);
+      this.manager.update(prefix, children);
     } else {
-      const op: IAction = { type: 'mount', key, children };
+      const op: IAction = { type: 'mount', prefix, children };
       const index = this.queue.findIndex(
-        (o) => o.type === 'mount' || (o.type === 'update' && o.key === key)
+        (o) =>
+          o.type === 'mount' || (o.type === 'update' && o.prefix === prefix)
       );
 
       if (index > -1) {
@@ -105,11 +106,11 @@ export class PortalHost extends React.Component<IProps> {
     }
   };
 
-  unmount = (key: string) => {
+  unmount = (prefix: string) => {
     if (this.manager) {
-      this.manager.unmount(key);
+      this.manager.unmount(prefix);
     } else {
-      this.queue.push({ type: 'unmount', key });
+      this.queue.push({ type: 'unmount', prefix });
     }
   };
 

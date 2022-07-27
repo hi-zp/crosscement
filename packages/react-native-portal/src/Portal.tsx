@@ -2,15 +2,21 @@ import React from 'react';
 import { PortalConsumer } from './PortalConsumer';
 import { PortalHost, PortalContext } from './PortalHost';
 
-export class Portal extends React.Component<{}> {
+interface IPortalProps {
+  prefix?: string;
+}
+
+export class Portal extends React.Component<IPortalProps> {
   static Host = PortalHost;
   render() {
-    const { children } = this.props;
+    const { children, prefix } = this.props;
     return (
       <PortalContext.Consumer>
         {(manager) =>
           (manager.mount as any) ? (
-            <PortalConsumer manager={manager}>{children}</PortalConsumer>
+            <PortalConsumer manager={manager} prefix={prefix}>
+              {children}
+            </PortalConsumer>
           ) : (
             children
           )

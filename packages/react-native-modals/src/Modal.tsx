@@ -25,6 +25,7 @@ export class Modal extends React.Component<IModalProps, IState> {
     onShow: () => {},
     onDismiss: () => {},
     hasOverlay: true,
+    overlayClosable: true,
     // onMove: () => {},
     // onSwiping: () => {},
     // onSwipeRelease: () => {},
@@ -48,8 +49,12 @@ export class Modal extends React.Component<IModalProps, IState> {
   // @ts-ignore
   context!: React.ContextType<typeof ModalContext>;
 
+  private get isOpening() {
+    return this.state.status === 'opened' || this.state.status === 'opening';
+  }
+
   componentDidMount() {
-    this._checkContext();
+    this.checkContext();
     this.props.visible && this.show();
     BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
   }
@@ -71,12 +76,15 @@ export class Modal extends React.Component<IModalProps, IState> {
     if (this.props.onHardwareBackPress) {
       return this.props.onHardwareBackPress();
     }
-    this.dismiss();
-    return true;
+    if (this.isOpening) {
+      this.dismiss();
+      return true;
+    }
+    return false;
   };
 
   public show = () => {
-    if (this.state.status === 'opened' || this.state.status === 'opening') {
+    if (this.isOpening) {
       return;
     }
     this.setState({ status: 'opening' }, this.showingSubsequent);
@@ -93,7 +101,7 @@ export class Modal extends React.Component<IModalProps, IState> {
   };
 
   public dismiss = () => {
-    if (this.state.status === 'closed' || this.state.status === 'closing') {
+    if (!this.isOpening) {
       return;
     }
     this.setState({ status: 'closing' }, () => {
@@ -103,21 +111,27 @@ export class Modal extends React.Component<IModalProps, IState> {
     });
   };
 
-  private renderOverlay() {
+  private handleOverlayPress = () => {
+    if (this.props.overlayClosable) {
+      this.dismiss();
+    }
+  };
+
+  private renderOverlay = () => {
     const props = this.props;
     const overlayVisible = ['opening', 'opened'].includes(this.state.status);
     return (
       <Backdrop
         ref={this.backdropRef}
         visible={overlayVisible}
-        onPress={this.dismiss}
+        onPress={this.handleOverlayPress}
         animationDuration={props.animationDuration}
         opacity={props.overlayOpacity}
         pointerEvents={props.overlayPointerEvents}
         backgroundColor={props.overlayBackgroundColor}
       />
     );
-  }
+  };
 
   private get modalSize(): Object {
     const { width: screenWidth, height: screenHeight } =
@@ -132,7 +146,7 @@ export class Modal extends React.Component<IModalProps, IState> {
     return { width, height };
   }
 
-  private renderContainer() {
+  private renderContainer = () => {
     const { modalStyle, style, children } = this.props;
     return (
       <View style={styles.container} pointerEvents="auto">
@@ -151,13 +165,13 @@ export class Modal extends React.Component<IModalProps, IState> {
         </View>
       </View>
     );
-  }
+  };
 
-  private _checkContext() {
+  private checkContext = () => {
     if (!Array.isArray(this.context.stacks)) {
       throw new Error('There is no modal provider!');
     }
-  }
+  };
 
   render(): React.ReactNode {
     return (

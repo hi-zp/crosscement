@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-type IProtal = { key: string; children: React.ReactNode };
+type IProtal = { prefix: string; children: React.ReactNode };
 type IState = { portals: IProtal[] };
 
 export class PortalManager extends React.PureComponent<{}, IState> {
@@ -12,31 +12,31 @@ export class PortalManager extends React.PureComponent<{}, IState> {
     };
   }
 
-  mount = (key: string, children: React.ReactNode) => {
+  mount = (prefix: string, children: React.ReactNode) => {
     this.setState((state) => ({
-      portals: [...state.portals, { key, children }],
+      portals: [...state.portals, { prefix, children }],
     }));
   };
 
-  update = (key: string, children: React.ReactNode) =>
+  update = (prefix: string, children: React.ReactNode) =>
     this.setState((state) => ({
       portals: state.portals.map((item) => {
-        if (item.key === key) {
+        if (item.prefix === prefix) {
           return { ...item, children };
         }
         return item;
       }),
     }));
 
-  unmount = (key: string) =>
+  unmount = (prefix: string) =>
     this.setState((state) => ({
-      portals: state.portals.filter((item) => item.key !== key),
+      portals: state.portals.filter((item) => item.prefix !== prefix),
     }));
 
   render() {
-    return this.state.portals.map(({ key, children }) => (
+    return this.state.portals.map(({ prefix, children }) => (
       <View
-        key={key}
+        key={prefix}
         collapsable={false}
         pointerEvents="box-none"
         style={StyleSheet.absoluteFill}

@@ -3,10 +3,11 @@ import type { IContext } from './PortalHost';
 
 type IProps = {
   manager: IContext;
+  prefix?: string;
 };
 
 export class PortalConsumer extends React.Component<IProps> {
-  key?: string = undefined;
+  prefix: string;
 
   async componentDidMount() {
     this.checkManager();
@@ -14,19 +15,19 @@ export class PortalConsumer extends React.Component<IProps> {
     // Delay updating to prevent React from going to infinite loop
     await Promise.resolve();
 
-    this.key = this.props.manager.mount(this.props.children);
+    this.prefix = this.props.manager.mount(this.props.children);
   }
 
   componentDidUpdate() {
     this.checkManager();
 
-    this.props.manager.update(this.key as string, this.props.children);
+    this.props.manager.update(this.prefix, this.props.children);
   }
 
   componentWillUnmount() {
     this.checkManager();
 
-    this.props.manager.unmount(this.key as string);
+    this.props.manager.unmount(this.prefix);
   }
 
   checkManager() {

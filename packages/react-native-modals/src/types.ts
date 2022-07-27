@@ -23,6 +23,7 @@ export interface IModalProps {
   overlayPointerEvents?: 'auto' | 'none';
   overlayBackgroundColor?: string;
   overlayOpacity?: number;
+  overlayClosable?: boolean;
   modalAnimation?: Animation;
   modalStyle?: any;
   style?: any;
