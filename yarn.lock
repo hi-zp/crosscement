@@ -1515,42 +1515,6 @@
   resolved "https://registry.npmjs.org/@commitlint/types/-/types-11.0.0.tgz#719cf05fcc1abb6533610a2e0f5dd1e61eac14fe"
   integrity sha512-VoNqai1vR5anRF5Tuh/+SWDFk7xi7oMwHrHrbm1BprYXjB2RJsWLhUrStMssDxEl5lW/z3EUdg8RvH/IUBccSQ==
 
-"@crosscement/react-native-dropdown@1.0.0-alpha.3":
-  version "1.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/@crosscement/react-native-dropdown/-/react-native-dropdown-1.0.0-alpha.3.tgz#7da0a569d938b556fd67309a14b5c6d472058733"
-  integrity sha512-FfMZe00dJgaH8UEaBNkyr+xjXTDwO0fryBhr4no2Wyg/KRnlXupjZ4y5ohXT/UvlcIDm20AO4kPFS5Y9g9LumQ==
-  dependencies:
-    "@crosscement/react-native-backdrop" "1.0.0-alpha.0"
-    "@crosscement/react-native-portal" "1.0.0-alpha.0"
-
-"@crosscement/react-native-modals@1.0.0-alpha.0":
-  version "1.0.0-alpha.0"
-  resolved "https://registry.npmjs.org/@crosscement/react-native-modals/-/react-native-modals-1.0.0-alpha.0.tgz#4c437a6c11b6689200b4ce1248a8ff27991634da"
-  integrity sha512-QKv1EL620OMGMyCOjRTclFzo6vhC5rt4+ilPZjTEniHMT/cDtyX3Qc8FGOy1MWM4KOLk+SoJI7uNRAATjS8zYA==
-  dependencies:
-    "@crosscement/react-native-backdrop" "1.0.0-alpha.0"
-    "@crosscement/react-native-portal" "1.0.0-alpha.0"
-    "@crosscement/react-native-utils" "1.0.0-alpha.1"
-
-"@crosscement/react-native-tooltip@1.0.0-alpha.3":
-  version "1.0.0-alpha.3"
-  resolved "https://registry.npmjs.org/@crosscement/react-native-tooltip/-/react-native-tooltip-1.0.0-alpha.3.tgz#a30dff8eefb4c27b4b5ad560eaab29b3fa47759b"
-  integrity sha512-ClHU2EIRf2TpLj+cl1S/GQf2lADXN78zCE58hwl0AkOHERUyXqHbNk/ogH9kLje66le1NKIH9I/OiZiyjfkjeA==
-  dependencies:
-    "@crosscement/react-native-backdrop" "1.0.0-alpha.0"
-    "@crosscement/react-native-portal" "1.0.0-alpha.0"
-    "@crosscement/react-native-utils" "1.0.0-alpha.0"
-
-"@crosscement/react-native-utils@1.0.0-alpha.0":
-  version "1.0.0-alpha.0"
-  resolved "https://registry.npmjs.org/@crosscement/react-native-utils/-/react-native-utils-1.0.0-alpha.0.tgz#374860ae8ceb02d9f370131804cc8ef1db67ced8"
-  integrity sha512-US/exxxRyg0X9F94ZFBjJLpZjrD73ullyfCoNIhgmbWmDEJjxqP7wCDEAvC+GZCctmnoTpLQ1sX08vPmAUVkKA==
-
-"@crosscement/react-native-utils@1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.npmjs.org/@crosscement/react-native-utils/-/react-native-utils-1.0.0-alpha.1.tgz#1bee5a7315564ee1ed8848407b407834bcf56da2"
-  integrity sha512-IvUPObvpPL3gF6Q0sfznLG0LMHSHT5NciuS24/qvjhw1ESLOoGoP6o8NwR0PJVeLo1BMB2vLDaydROa9vnXJxg==
-
 "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
