@@ -1,6 +1,6 @@
 {
   "name": "crosscement",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "smart backdrop",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -45,10 +45,10 @@
   },
   "dependencies": {
     "@crosscement/react-native-backdrop": "1.0.0-alpha.0",
-    "@crosscement/react-native-dropdown": "1.0.0-alpha.8",
-    "@crosscement/react-native-modals": "1.0.0-alpha.4",
+    "@crosscement/react-native-dropdown": "1.0.0-alpha.9",
+    "@crosscement/react-native-modals": "1.0.0-alpha.5",
     "@crosscement/react-native-portal": "1.0.0-alpha.1",
-    "@crosscement/react-native-tooltip": "1.0.0-alpha.8",
+    "@crosscement/react-native-tooltip": "1.0.0-alpha.9",
     "@crosscement/react-native-utils": "1.0.0-alpha.4"
   },
   "jest": {

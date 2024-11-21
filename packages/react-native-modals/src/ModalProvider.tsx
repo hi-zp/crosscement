@@ -1,6 +1,7 @@
 import React, {
   createContext,
   isValidElement,
+  PropsWithChildren,
   useCallback,
   useState,
 } from 'react';
@@ -14,7 +15,7 @@ type IContext = {
 
 export const ModalContext = createContext<IContext>({} as IContext);
 
-export const ModalProvider: React.FC<{}> = ({ children }) => {
+export const ModalProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [stacks, setStacks] = useState<IContext['stacks']>([]);
 
   const pushStack = useCallback<IContext['pushStack']>((key) => {
