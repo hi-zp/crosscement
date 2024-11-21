@@ -11,7 +11,10 @@ interface IProps {
   scroll?: IContext['scroll'];
 }
 
-export const DropdownProvider: React.FC<PropsWithChildren<IProps>> = ({ scroll, children }) => {
+export const DropdownProvider: React.FC<PropsWithChildren<IProps>> = ({
+  scroll,
+  children,
+}) => {
   const context: IContext = {
     scroll,
   };
